@@ -1,5 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { getRepositoriesWithSearch } from "services/Search.service";
+import { Checkbox } from "primereact/checkbox";
+
+interface Category {
+  id: number;
+  name: string;
+  key: string;
+}
+
+const Items = ({ repoList }: any) => {
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+
+  const onCategoryChange = (e: any) => {
+    let _selectedCategories = [...selectedCategories];
+
+    if (e.checked) {
+      _selectedCategories.push(e.value);
+    } else {
+      _selectedCategories = _selectedCategories.filter(
+        (category) => category.id !== e.value.id
+      );
+    }
+    setSelectedCategories(_selectedCategories);
+  };
+
+  return (
+    <div>
+      {repoList.length !== 0 &&
+        repoList.map((data: any) => {
+          return (
+            <div key={data.id} className="flex align-items-center">
+              <Checkbox
+                inputId={data.id}
+                name="category"
+                value={data}
+                onChange={onCategoryChange}
+                checked={selectedCategories.some((item) => item.id === data.id)}
+              />
+              <label htmlFor={data.id} className="ml-2">
+                {data["full_name"]}
+              </label>
+            </div>
+          );
+        })}
+    </div>
+  );
+};
 
 const SearchPage: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -12,6 +58,8 @@ const SearchPage: React.FC = () => {
     setSearchParam(searchInput);
   };
 
+  // 응답 상태값 저장 함수 필요----!
+
   useEffect(() => {
     getRepositoriesWithSearch(searchParam)
       .then((response) => {
@@ -21,7 +69,6 @@ const SearchPage: React.FC = () => {
           window.localStorage.setItem(data.id + "", JSON.stringify(data));
           saveKeyList = [...saveKeyList, data.id];
         });
-        console.log(saveKeyList);
         window.localStorage.setItem("keyList", JSON.stringify(saveKeyList));
       })
       .catch((error) => {
@@ -44,11 +91,10 @@ const SearchPage: React.FC = () => {
         {searchInput} {searchParam}
       </div>
       <div>
-        {apiresponse.length !== 0 &&
+        {apiresponse.length !== 0 && (
           //
-          apiresponse.map((data: any) => {
-            return <div key={data.id}>{data["full_name"]}</div>;
-          })}
+          <Items repoList={apiresponse} />
+        )}
       </div>
     </div>
   );

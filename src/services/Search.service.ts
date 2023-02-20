@@ -22,7 +22,7 @@ export const getIssuesInRepository = async (owner: string, repo: string) => {
       owner: owner,
       repo: repo,
     });
-    return response;
+    return response.data;
   } catch (error) {
     alert(error);
   }
