@@ -7,14 +7,23 @@ import IssueModal from "modal/IssueModal";
 const ListPage: React.FC = () => {
   const [checkedRepoList, setCheckedRepoList] = useState<any>(null);
 
-  const [visible, setVisible] = useState(false);
+  const onCategoryChange = (id: string) => {
+    let _selectedCategories = [...checkedRepoList];
+
+    _selectedCategories = _selectedCategories.filter(
+      (category) => category.id !== id
+    );
+
+    localStorage.setItem("checkedRepo", JSON.stringify(_selectedCategories));
+    setCheckedRepoList(_selectedCategories);
+  };
 
   useEffect(() => {
     let localData = localStorage.getItem("checkedRepo");
     if (localData) {
       setCheckedRepoList(JSON.parse(localData));
     }
-  }, []);
+  }, [checkedRepoList]);
 
   const openIssueModal = (name: string, repo: string) => {
     confirmDialog({
@@ -31,17 +40,20 @@ const ListPage: React.FC = () => {
         {checkedRepoList &&
           checkedRepoList.map((repo: any) => {
             return (
-              <button
-                key={repo.id}
-                onClick={() =>
-                  openIssueModal(
-                    repo["full_name"].split("/")[0],
-                    repo["full_name"].split("/")[1]
-                  )
-                }
-              >
-                {repo["full_name"]}
-              </button>
+              <div>
+                <button
+                  key={repo.id}
+                  onClick={() =>
+                    openIssueModal(
+                      repo["full_name"].split("/")[0],
+                      repo["full_name"].split("/")[1]
+                    )
+                  }
+                >
+                  {repo["full_name"]}
+                </button>
+                <button onClick={() => onCategoryChange(repo.id)}>삭제</button>
+              </div>
             );
           })}
       </div>

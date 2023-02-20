@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getRepositoriesWithSearch } from "services/Search.service";
 import { Checkbox } from "primereact/checkbox";
+import { Toast } from "primereact/toast";
 
 interface Category {
   id: number;
