@@ -33,8 +33,15 @@ const SearchPage: React.FC = () => {
   return (
     <div>
       <input
+        id="searchInput"
         type={"text"}
         value={searchInput}
+        onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === "Enter") {
+            let inputValue: any = document.getElementById("searchInput");
+            setSearchParam(inputValue.value);
+          }
+        }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setSearchInput(e.target.value);
         }}
