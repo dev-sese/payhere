@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Checkbox } from "primereact/checkbox";
 import { Toast } from "primereact/toast";
+import { DataView } from "primereact/dataview";
 
 interface Category {
   id: number;
@@ -8,9 +9,16 @@ interface Category {
   key: string;
 }
 
-const SearchResult = ({ repoList }: any) => {
+const SearchResult = ({ repoList, setPage, totalRecords }: any) => {
   const toast = useRef<Toast>(null);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+
+  const [first, setFirst] = useState(1);
+
+  const onPageChange = (event: any) => {
+    setPage(event.page + 1);
+    setFirst(event.first);
+  };
 
   const onCategoryChange = (e: any) => {
     let _selectedCategories = [...selectedCategories];
@@ -42,26 +50,38 @@ const SearchResult = ({ repoList }: any) => {
     }
   }, [selectedCategories]);
 
+  const repoListTemplete = (repo: any) => {
+    return (
+      <div key={repo.id} className="flex align-items-center">
+        <Checkbox
+          inputId={repo.id}
+          name="category"
+          value={repo}
+          onChange={onCategoryChange}
+          checked={selectedCategories.some((item) => item.id === repo.id)}
+        />
+        <label htmlFor={repo.id} className="ml-2">
+          {repo["full_name"]}
+        </label>
+      </div>
+    );
+  };
+
   return (
     <div>
       <Toast ref={toast} />
-      {repoList.length !== 0 &&
-        repoList.map((data: any) => {
-          return (
-            <div key={data.id} className="flex align-items-center">
-              <Checkbox
-                inputId={data.id}
-                name="category"
-                value={data}
-                onChange={onCategoryChange}
-                checked={selectedCategories.some((item) => item.id === data.id)}
-              />
-              <label htmlFor={data.id} className="ml-2">
-                {data["full_name"]}
-              </label>
-            </div>
-          );
-        })}
+      {repoList.length !== 0 && (
+        <DataView
+          value={repoList}
+          lazy
+          itemTemplate={repoListTemplete}
+          paginator
+          onPage={onPageChange}
+          rows={10}
+          first={first}
+          totalRecords={totalRecords}
+        />
+      )}
     </div>
   );
 };

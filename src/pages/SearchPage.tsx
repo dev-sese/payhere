@@ -7,7 +7,9 @@ const SearchPage: React.FC = () => {
 
   const [searchParam, setSearchParam] = useState("#");
 
-  const [apiresponse, setApiresponse] = useState<any>([]);
+  const [apiresponse, setApiresponse] = useState<any>(null);
+
+  const [page, setPage] = useState(1);
 
   const searchParamChangeHandler = () => {
     setSearchParam(searchInput);
@@ -15,15 +17,17 @@ const SearchPage: React.FC = () => {
 
   // 응답 상태값 저장 함수 필요----!
 
+  console.log(page);
+
   useEffect(() => {
-    getRepositoriesWithSearch(searchParam)
+    getRepositoriesWithSearch(searchParam, page)
       .then((response) => {
         setApiresponse(response);
       })
       .catch((error) => {
         throw error;
       });
-  }, [searchParam]);
+  }, [searchParam, page]);
 
   return (
     <div>
@@ -40,9 +44,13 @@ const SearchPage: React.FC = () => {
         {searchInput} {searchParam}
       </div>
       <div>
-        {apiresponse.length !== 0 && (
+        {apiresponse && (
           //
-          <SearchResult repoList={apiresponse} />
+          <SearchResult
+            repoList={apiresponse.items}
+            setPage={setPage}
+            totalRecords={apiresponse["total_count"]}
+          />
         )}
       </div>
     </div>

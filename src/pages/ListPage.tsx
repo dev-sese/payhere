@@ -23,11 +23,13 @@ const ListPage: React.FC = () => {
     if (localData) {
       setCheckedRepoList(JSON.parse(localData));
     }
-  }, [checkedRepoList]);
+  }, []);
 
-  const openIssueModal = (name: string, repo: string) => {
+  const openIssueModal = (name: string, repo: string, total: number) => {
     confirmDialog({
-      message: <IssueModal repoInfo={{ name: name, repo: repo }} />,
+      message: (
+        <IssueModal repoInfo={{ name: name, repo: repo, total: total }} />
+      ),
       header: "Issue List",
     });
   };
@@ -46,7 +48,8 @@ const ListPage: React.FC = () => {
                   onClick={() =>
                     openIssueModal(
                       repo["full_name"].split("/")[0],
-                      repo["full_name"].split("/")[1]
+                      repo["full_name"].split("/")[1],
+                      repo["open_issues_count"]
                     )
                   }
                 >
