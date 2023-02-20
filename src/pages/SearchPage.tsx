@@ -21,8 +21,20 @@ const Items = ({ repoList }: any) => {
         (category) => category.id !== e.value.id
       );
     }
-    setSelectedCategories(_selectedCategories);
+
+    if (_selectedCategories.length < 5) {
+      setSelectedCategories(_selectedCategories);
+    } else {
+      console.log("4개 넘어갔어요!!");
+    }
   };
+
+  useEffect(() => {
+    if (selectedCategories.length !== 0) {
+      localStorage.clear();
+      localStorage.setItem("checkedRepo", JSON.stringify(selectedCategories));
+    }
+  }, [selectedCategories]);
 
   return (
     <div>
@@ -64,12 +76,6 @@ const SearchPage: React.FC = () => {
     getRepositoriesWithSearch(searchParam)
       .then((response) => {
         setApiresponse(response);
-        let saveKeyList: any = [];
-        response?.slice(0, 4).map((data) => {
-          window.localStorage.setItem(data.id + "", JSON.stringify(data));
-          saveKeyList = [...saveKeyList, data.id];
-        });
-        window.localStorage.setItem("keyList", JSON.stringify(saveKeyList));
       })
       .catch((error) => {
         throw error;
