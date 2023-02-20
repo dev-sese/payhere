@@ -4,6 +4,7 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_ACCESS_TOKEN,
 });
 
+// 검색 조건으로 repository 목록 조회
 export const getRepositoriesWithSearch = async (
   searchParam: string,
   page: number
@@ -21,6 +22,7 @@ export const getRepositoriesWithSearch = async (
   }
 };
 
+// 선택된 repository의 issue 목록 조회
 export const getIssuesInRepository = async (
   owner: string,
   repo: string,

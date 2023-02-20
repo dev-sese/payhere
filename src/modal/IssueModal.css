@@ -1,0 +1,7 @@
+.p-dialog-content {
+  align-items: flex-start !important;
+}
+
+.p-dialog-footer {
+  display: none;
+}

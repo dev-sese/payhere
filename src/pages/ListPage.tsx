@@ -5,8 +5,28 @@ import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import IssueModal from "modal/IssueModal";
 
 const ListPage: React.FC = () => {
+  // 현재 저장된 repository 목록
   const [checkedRepoList, setCheckedRepoList] = useState<any>(null);
 
+  // 첫 랜더링 시 현재 localStorage에 저장된 repo들을 불러옴
+  useEffect(() => {
+    let localData = localStorage.getItem("checkedRepo");
+    if (localData) {
+      setCheckedRepoList(JSON.parse(localData));
+    }
+  }, []);
+
+  // repository 버튼을 선택하면 issue 모달을 엶
+  const openIssueModal = (name: string, repo: string, total: number) => {
+    confirmDialog({
+      message: (
+        <IssueModal repoInfo={{ name: name, repo: repo, total: total }} />
+      ),
+      header: "Issue List",
+    });
+  };
+
+  // 삭제 버튼을 선택하면 해당 repository를 선택 목록에서 제거
   const onCategoryChange = (id: string) => {
     let _selectedCategories = [...checkedRepoList];
 
@@ -18,25 +38,8 @@ const ListPage: React.FC = () => {
     setCheckedRepoList(_selectedCategories);
   };
 
-  useEffect(() => {
-    let localData = localStorage.getItem("checkedRepo");
-    if (localData) {
-      setCheckedRepoList(JSON.parse(localData));
-    }
-  }, []);
-
-  const openIssueModal = (name: string, repo: string, total: number) => {
-    confirmDialog({
-      message: (
-        <IssueModal repoInfo={{ name: name, repo: repo, total: total }} />
-      ),
-      header: "Issue List",
-    });
-  };
-
   return (
     <div>
-      <div>우애앵 리스트페이지</div>
       <ConfirmDialog />
       <div>
         {checkedRepoList &&
