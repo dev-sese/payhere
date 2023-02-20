@@ -16,9 +16,13 @@ const SearchPage: React.FC = () => {
     getRepositoriesWithSearch(searchParam)
       .then((response) => {
         setApiresponse(response);
+        let saveKeyList: any = [];
         response?.slice(0, 4).map((data) => {
           window.localStorage.setItem(data.id + "", JSON.stringify(data));
+          saveKeyList = [...saveKeyList, data.id];
         });
+        console.log(saveKeyList);
+        window.localStorage.setItem("keyList", JSON.stringify(saveKeyList));
       })
       .catch((error) => {
         throw error;

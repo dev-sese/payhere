@@ -15,3 +15,15 @@ export const getRepositoriesWithSearch = async (searchParam: string) => {
     alert(error);
   }
 };
+
+export const getIssuesInRepository = async (owner: string, repo: string) => {
+  try {
+    let response = await octokit.request("GET /repos/{owner}/{repo}/issues", {
+      owner: owner,
+      repo: repo,
+    });
+    return response;
+  } catch (error) {
+    alert(error);
+  }
+};
